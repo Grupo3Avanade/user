@@ -11,6 +11,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,24 +21,24 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class UserRepositoryTest {
 
+
     @Autowired
     private UserRepository repository;
-
-    private User user1;
+    private User user;
 
     @BeforeEach
     void setup() {
         RequestAddress requestAddress = new RequestAddress("12345", "Alguma rua", "Algum bairro", "Alguma cidade", "Algum estado", "Algum complemento", "42");
-
         RequestUser requestUser = new RequestUser("Volnei", "volnei@email.com", LocalDate.of(1997, 7, 24), requestAddress);
-        user1 = new User(requestUser);
+        user = new User(requestUser);
+
     }
 
     @Test
     @DisplayName("Should successfully create and initialize a new user in the repository")
     void shouldSuccessfullyCreateAndInitializeNewUser() {
 
-        User user = repository.saveAndFlush(user1);
+        User user = repository.saveAndFlush(this.user);
 
         assertNotNull(user);
         assertNotNull(user.getId());
@@ -53,10 +56,40 @@ public class UserRepositoryTest {
     @DisplayName("Should confirm that an existing email is recognized by the repository")
     void shouldConfirmExistingEmailIsRecognizedByRepository() {
 
-        repository.saveAndFlush(user1);
+        repository.saveAndFlush(user);
 
-        Boolean existsByEmail = repository.existsByEmail(user1.getEmail());
+        Boolean existsByEmail = repository.existsByEmail(user.getEmail());
 
         assertTrue(existsByEmail);
+    }
+
+    @Test
+    @DisplayName("ShouldRetrieveAllUsers")
+    void shouldRetrieveAllUsers() {
+        repository.saveAndFlush(user);
+
+        List<User> users = repository.findAll();
+
+        assertNotNull(users);
+        assertEquals(1, users.size());
+    }
+
+    @Test
+    @DisplayName("ShouldRetrieveUserById")
+    void shouldRetrieveUserById() {
+        User savedUser = repository.saveAndFlush(user);
+
+        Optional<User> foundUser = repository.findById(savedUser.getId());
+
+        assertTrue(foundUser.isPresent());
+        assertEquals(savedUser.getId(), foundUser.get().getId());
+    }
+
+    @Test
+    @DisplayName("ShouldNotRetrieveUserForNonExistentId")
+    void shouldNotRetrieveUserForNonExistentId() {
+        Optional<User> foundUser = repository.findById(UUID.randomUUID());
+
+        assertFalse(foundUser.isPresent());
     }
 }
