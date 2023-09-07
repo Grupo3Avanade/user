@@ -51,4 +51,48 @@ public class User {
     public ResponseUser toResponse() {
         return new ResponseUser(id, name, email, birthday, address.toResponse(), createdAt, updatedAt);
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 }
