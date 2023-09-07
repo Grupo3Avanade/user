@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: /
+  port: 9080
+  compression:
+    mime-types:
+      - application/json
+
+spring:
+  profiles:
+    active: ${PROFILE_ACTIVE:test}
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: cartoes-ms
