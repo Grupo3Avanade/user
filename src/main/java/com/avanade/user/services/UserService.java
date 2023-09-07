@@ -39,7 +39,7 @@ public class UserService {
 
     public ResponseUser create(RequestUser request) {
         User user = new User(request);
-        checkIfEmailAlreadyExists(user);
+        checkIfEmailAlreadyExists(user.getEmail());
         saveOrFail(user);
         return user.toResponse();
     }
@@ -49,9 +49,10 @@ public class UserService {
         User user = findOrFailById(id);
 
         user.setName(request.name());
-        user.setEmail(request.email());
         user.setBirthday(request.birthday());
         user.setAddress(address);
+
+        setNewEmailIfNotExist(request, user);
 
         saveOrFail(user);
         return user.toResponse();
@@ -70,8 +71,16 @@ public class UserService {
         }
     }
 
-    private void checkIfEmailAlreadyExists(User user) {
-        boolean isUserExists = repository.existsByEmail(user.getEmail());
+    private void setNewEmailIfNotExist(RequestUser request, User user) {
+        if (!request.email().equals(user.getEmail())) {
+            checkIfEmailAlreadyExists(request.email());
+            user.setEmail(request.email());
+        }
+    }
+
+
+    private void checkIfEmailAlreadyExists(String email) {
+        boolean isUserExists = repository.existsByEmail(email);
         if (isUserExists) {
             throw new ResourceAlreadyExistsException("User with the informed email already exists");
         }
