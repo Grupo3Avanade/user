@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 public record RequestUser(
@@ -25,5 +26,15 @@ public record RequestUser(
         @Valid
         @NotNull
         RequestAddress address
-) {
+) implements Serializable {
+
+        @Override
+        public String toString() {
+                return "RequestUser{" +
+                        "name='" + name + '\'' +
+                        ", email='" + email + '\'' +
+                        ", birthday=" + birthday +
+                        ", address=" + address +
+                        '}';
+        }
 }

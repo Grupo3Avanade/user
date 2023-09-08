@@ -1,5 +1,6 @@
 package com.avanade.user.controllers;
 
+import com.avanade.user.amqp.UserPublisher;
 import com.avanade.user.payloads.request.RequestUser;
 import com.avanade.user.payloads.response.ResponseUser;
 import com.avanade.user.services.UserService;
@@ -15,14 +16,17 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService service;
-
-    public UserController(UserService service) {
+    private final UserPublisher publisher;
+    public UserController(UserService service, UserPublisher publisher) {
         this.service = service;
+        this.publisher = publisher;
     }
 
     @PostMapping
     public ResponseEntity<ResponseUser> create(@RequestBody @Valid RequestUser request) {
         ResponseUser response = service.create(request);
+
+        publisher.createUser(request);
         return ResponseEntity.status(201).body(response);
     }
 
