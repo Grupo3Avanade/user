@@ -8,7 +8,7 @@ server:
 
 spring:
   profiles:
-    active: ${PROFILE_ACTIVE:test}
+    active: ${PROFILE_ACTIVE:dev}
   main:
     allow-bean-definition-overriding: true
   application:

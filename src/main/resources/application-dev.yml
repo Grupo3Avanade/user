@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_URL:localhost:5433/user}
+    driverClassName: org.postgresql.Driver
+    username: ${DATABASE_USERNAME:user}
+    password: ${DATABASE_PASSWORD:user}
+  jpa:
+    open-in-view: false
+    show-sql: true
+    format-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:data-postgres.sql
+      mode: always
+  liquibase:
+    enabled: false
+    change-log: classpath:db/changelog/changelog-local.xml
